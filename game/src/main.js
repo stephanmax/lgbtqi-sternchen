@@ -1,4 +1,5 @@
 import SceneGame from './scenes/SceneGame.js';
+import SceneTitle from './scenes/SceneTitle.js';
 
 const TILESIZE = 64;
 
@@ -14,6 +15,7 @@ const config = {
     }
   },
   scene: [
+    SceneTitle,
     SceneGame
   ]
 };

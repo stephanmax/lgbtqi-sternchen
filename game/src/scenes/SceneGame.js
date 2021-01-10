@@ -17,7 +17,11 @@ const playerData = {
 	dancing: false,
 	skills: [
 		'passthrough',
-		'climb',
+		{
+			id: 'climb',
+			instruction: 'Stick to purple blocks and climb',
+			textTile: 'textBisexual'
+		},
 		{
 			id: 'speedBlock',
 			instruction: 'Speed boost on yellow blocks',
@@ -76,7 +80,6 @@ export default class SceneGame extends Phaser.Scene {
 		);
 		
 		// SFX
-		this.load.audio('audio-background', ['../assets/sfx-background.mp3', '../assets/sfx-background.ogg']);
 		this.load.audio('audio-jump', ['../assets/sfx-jump.mp3', '../assets/sfx-jump.ogg']);
 		this.load.audio('audio-jumpboost', ['../assets/sfx-jumpboost.mp3', '../assets/sfx-jumpboost.ogg']);
 		this.load.audio('audio-jumpspeed', ['../assets/sfx-jumpspeed.mp3', '../assets/sfx-jumpspeed.ogg']);
@@ -155,8 +158,6 @@ export default class SceneGame extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		// SFX
-		const musicBackground = this.sound.add('audio-background', { loop: true });
-		musicBackground.play();
 		this.soundJump = this.sound.add('audio-jump');
 		this.soundJumpBoost = this.sound.add('audio-jumpboost');
 		this.soundJumpSpeed = this.sound.add('audio-jumpspeed');
@@ -221,6 +222,11 @@ export default class SceneGame extends Phaser.Scene {
 			fontSize: 32,
 			color: 'rgba(255, 255, 255, 0.5)'
 		}).setAngle(90).setDepth(-10);
+		this.textBisexual = this.add.text(384, 2560, 'bisexual', {
+			fontFamily: 'font40b',
+			fontSize: 32,
+			color: 'rgba(255, 255, 255, 0.5)'
+		}).setAngle(-90).setDepth(-10);
 	}
 
 	createPlayer(x, y) {
