@@ -20,7 +20,11 @@ const playerData = {
 		'climb',
 		'speedBlock',
 		'jumpBlock',
-		'jump'
+		{
+			id: 'jump',
+			instruction: 'Press SPACE     to Jump',
+			textTile: 'textHuman'
+		}
 	]
 };
 
@@ -194,7 +198,7 @@ export default class SceneGame extends Phaser.Scene {
 		// });
 
 		// Text
-		this.textHuman = this.add.text(1920, 2432, 'human', {
+		this.textHuman = this.add.text(1856, 2368, 'human', {
 			fontFamily: 'font40b',
 			fontSize: 40,
 			color: 'rgba(255, 255, 255, 0.7)'
@@ -267,8 +271,10 @@ export default class SceneGame extends Phaser.Scene {
 		player.play('animation-collect', true);
 		
 		// Obtain next skill
-		const nextSkill = `skill-${playerData.skills.pop()}`;
+		const skillItem = playerData.skills.pop();
+		const nextSkill = `skill-${skillItem.id}`;
 		playerData[nextSkill] = true;
+		this[skillItem.textTile].setText(skillItem.instruction);
 
 		if (nextSkill === 'skill-jump') {
 			this.explosion01.startFollow(player);
