@@ -152,7 +152,7 @@ export default class SceneGame extends Phaser.Scene {
 
 		// Timers
 		this.timerDance = new Phaser.Time.TimerEvent({
-			delay: 10000,
+			delay: 5000,
 			loop: true,
 			callback: () => {
 				this.camera.zoomTo(2, 3000);
@@ -188,6 +188,13 @@ export default class SceneGame extends Phaser.Scene {
 		// this.physics.add.overlap(this.player, this.boxesSticky, () => {
 		// 	playerData.sticky = true;
 		// });
+
+		// Text
+		this.textHuman = this.add.text(1920, 2432, 'human', {
+			fontFamily: 'font40b',
+			fontSize: 40,
+			color: 'rgba(255, 255, 255, 0.7)'
+		}).setAngle(45).setDepth(-10);
 	}
 
 	createPlayer(x, y) {
@@ -322,8 +329,10 @@ export default class SceneGame extends Phaser.Scene {
 
 		if (this.cursors.left.isDown) {
 			if (playerData.dancing) {
-				this.camera.zoomTo(1, 1500);
 				playerData.dancing = false;
+			}
+			if (this.camera.zoom !== 1) {
+				this.camera.zoomTo(1, 1500);
 			}
 
 			this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
@@ -332,8 +341,10 @@ export default class SceneGame extends Phaser.Scene {
 		}
 		else if (this.cursors.right.isDown) {
 			if (playerData.dancing) {
-				this.camera.zoomTo(1, 1500);
 				playerData.dancing = false;
+			}
+			if (this.camera.zoom !== 1) {
+				this.camera.zoomTo(1, 1500);
 			}
 
 			this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
@@ -356,6 +367,9 @@ export default class SceneGame extends Phaser.Scene {
 		}
 
 		if (this.cursors.space.isDown && playerData['skill-jump']) {
+			if (this.camera.zoom !== 1) {
+				this.camera.zoomTo(1, 1500);
+			}
 			if (this.player.body.onFloor() || (playerData.sticky && (this.cursors.right.isDown || this.cursors.left.isDown))) {
 				if (playerData.jumpBoost === 1) {
 					if (playerData.speedBoost > 1) {
