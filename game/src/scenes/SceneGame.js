@@ -19,7 +19,11 @@ const playerData = {
 		'passthrough',
 		'climb',
 		'speedBlock',
-		'jumpBlock',
+		{
+			id: 'jumpBlock',
+			instruction: 'Jump higher on white Arrow Blocks',
+			textTile: 'textTransgender'
+		},
 		{
 			id: 'jump',
 			instruction: 'Press SPACE     to Jump',
@@ -201,8 +205,13 @@ export default class SceneGame extends Phaser.Scene {
 		this.textHuman = this.add.text(1856, 2368, 'human', {
 			fontFamily: 'font40b',
 			fontSize: 40,
-			color: 'rgba(255, 255, 255, 0.7)'
+			color: 'rgba(255, 255, 255, 0.5)'
 		}).setAngle(45).setDepth(-10);
+		this.textTransgender = this.add.text(2752, 2112, 'transgender', {
+			fontFamily: 'font40b',
+			fontSize: 32,
+			color: 'rgba(255, 255, 255, 0.5)'
+		}).setDepth(-10);
 	}
 
 	createPlayer(x, y) {
