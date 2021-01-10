@@ -207,6 +207,11 @@ export default class SceneGame extends Phaser.Scene {
 		// });
 
 		// Text
+		this.textHuman = this.add.text(this.player.x, this.player.y - 80, 'Use arrow keys\nto move', {
+			fontFamily: 'font40b',
+			fontSize: 24,
+			color: 'rgba(255, 255, 255, 0.5)'
+		}).setDepth(-10);
 		this.textHuman = this.add.text(1856, 2368, 'human', {
 			fontFamily: 'font40b',
 			fontSize: 40,
