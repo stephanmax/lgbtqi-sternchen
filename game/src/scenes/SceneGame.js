@@ -162,28 +162,32 @@ export default class SceneGame extends Phaser.Scene {
 		this.time.addEvent(this.timerDance);
 
 		// Particles
-		this.explosion01 = this.add.particles('particle1').createEmitter({
-			x: 200,
-			y: 100,
-			speed: { min: -800, max: 800 },
-			angle: { min: 0, max: 360 },
-			scale: { start: 0.5, end: 0 },
-			blendMode: 'SCREEN',
-			//active: false,
-			lifespan: 600,
-			gravityY: 800
-		});
-		this.explosion02 = this.add.particles('particle2').createEmitter({
-			x: 200,
-			y: 100,
-			speed: { min: -800, max: 800 },
-			angle: { min: 0, max: 360 },
-			scale: { start: 0.5, end: 0 },
-			blendMode: 'SCREEN',
-			//active: false,
-			lifespan: 600,
-			gravityY: 800
-		});
+		this.explosion01 = this.add.particles('particle1')
+			.setDepth(-5)
+			.createEmitter({
+				x: 200,
+				y: 100,
+				speed: { min: -200, max: 100 },
+				angle: { min: 0, max: 360 },
+				scale: { start: 0.5, end: 0 },
+				blendMode: 'SCREEN',
+				//active: false,
+				lifespan: 500,
+				gravityY: 100
+			});
+		this.explosion02 = this.add.particles('particle2')
+			.setDepth(-5)
+			.createEmitter({
+				x: 200,
+				y: 100,
+				speed: { min: -200, max: 100 },
+				angle: { min: 0, max: 360 },
+				scale: { start: 0.5, end: 0 },
+				blendMode: 'SCREEN',
+				//active: false,
+				lifespan: 500,
+				gravityY: 100
+			});
 
 		// this.physics.add.overlap(this.player, this.boxesSticky, () => {
 		// 	playerData.sticky = true;
@@ -268,11 +272,9 @@ export default class SceneGame extends Phaser.Scene {
 
 		if (nextSkill === 'skill-jump') {
 			this.explosion01.startFollow(player);
-			this.explosion01.flow(1500, 10);
 		}
 		else if (nextSkill === 'skill-jumpBlock') {
 			this.explosion02.startFollow(player);
-			this.explosion02.flow(1500, 10);
 		}
 	}
 
