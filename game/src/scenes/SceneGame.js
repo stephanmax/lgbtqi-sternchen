@@ -16,7 +16,11 @@ const playerData = {
 	sticky: false,
 	dancing: false,
 	skills: [
-		'passthrough',
+		{
+			id: 'passthrough',
+			instruction: 'Walk through pink blocks',
+			textTile: 'textGenderfluid'
+		},
 		{
 			id: 'climb',
 			instruction: 'Stick to purple blocks and climb',
@@ -214,11 +218,12 @@ export default class SceneGame extends Phaser.Scene {
 			});
 
 		// Text
-		this.textHuman = this.add.text(this.player.x, this.player.y - 80, 'Use arrow keys\nto move', {
+		this.add.text(this.player.x, this.player.y - 80, 'Use arrow keys\nto move', {
 			fontFamily: 'font40b',
 			fontSize: 24,
 			color: 'rgba(255, 255, 255, 0.5)'
 		}).setDepth(-10);
+
 		this.textHuman = this.add.text(1856, 2368, 'human', {
 			fontFamily: 'font40b',
 			fontSize: 40,
@@ -239,6 +244,11 @@ export default class SceneGame extends Phaser.Scene {
 			fontSize: 32,
 			color: 'rgba(255, 255, 255, 0.5)'
 		}).setAngle(-90).setDepth(-10);
+		this.textGenderfluid = this.add.text(1280, 960, 'genderfluid', {
+			fontFamily: 'font40b',
+			fontSize: 32,
+			color: 'rgba(255, 255, 255, 0.5)'
+		});
 	}
 
 	createPlayer(x, y) {
@@ -330,11 +340,11 @@ export default class SceneGame extends Phaser.Scene {
 
 			if (this.cursors.up.isDown) {
 				this.player.setVelocityY(-playerData.MAX_SPEED);
-				this.player.play('climb', true);
+				this.player.play('animation-climb', true);
 			}
 			else if (this.cursors.down.isDown) {
 				this.player.setVelocityY(playerData.MAX_SPEED);
-				this.player.play('climb', true);
+				this.player.play('animation-climb', true);
 			}
 			else {
 				this.player.setVelocityY(0);
