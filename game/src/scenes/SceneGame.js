@@ -18,10 +18,14 @@ const playerData = {
 	skills: [
 		'passthrough',
 		'climb',
-		'speedBlock',
+		{
+			id: 'speedBlock',
+			instruction: 'Speed boost on yellow blocks',
+			textTile: 'textPansexual'
+		},
 		{
 			id: 'jumpBlock',
-			instruction: 'Jump higher on white Arrow Blocks',
+			instruction: 'Jump higher on white blocks',
 			textTile: 'textTransgender'
 		},
 		{
@@ -212,6 +216,11 @@ export default class SceneGame extends Phaser.Scene {
 			fontSize: 32,
 			color: 'rgba(255, 255, 255, 0.5)'
 		}).setDepth(-10);
+		this.textPansexual = this.add.text(3584, 1472, 'pansexual', {
+			fontFamily: 'font40b',
+			fontSize: 32,
+			color: 'rgba(255, 255, 255, 0.5)'
+		}).setAngle(90).setDepth(-10);
 	}
 
 	createPlayer(x, y) {
