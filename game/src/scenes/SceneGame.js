@@ -22,12 +22,12 @@ export default class SceneGame extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image(KEYS.SOLID, '/assets/box-solid.png');
-		this.load.image(KEYS.SPRING, '/assets/box-spring.png');
-		this.load.image(KEYS.SPEEDUP, '/assets/box-speedup.png');
-		this.load.image(KEYS.STICKY, '/assets/box-sticky.png');
+		this.load.image(KEYS.SOLID, '../assets/box-solid.png');
+		this.load.image(KEYS.SPRING, '../assets/box-spring.png');
+		this.load.image(KEYS.SPEEDUP, '../assets/box-speedup.png');
+		this.load.image(KEYS.STICKY, '../assets/box-sticky.png');
 		
-		this.load.atlas(KEYS.PLAYER, '/assets/player.png', '/assets/player_atlas.json');
+		this.load.atlas(KEYS.PLAYER, '../assets/player.png', '../assets/player_atlas.json');
 	}
 
 	create() {
