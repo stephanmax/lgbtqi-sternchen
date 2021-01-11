@@ -1,0 +1,19 @@
+{
+  "name": "lgbtqi-sternchen",
+  "version": "0.0.1",
+  "description": "Unser bpb:game jam 2021 Beitrag",
+  "main": "src/index.html",
+  "scripts": {
+    "start": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephanmax/lgbtqi-sternchen.git"
+  },
+  "author": "Stephan Max <hello@stephanmax.com> (https://stephanmax.is)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stephanmax/lgbtqi-sternchen/issues"
+  },
+  "homepage": "https://github.com/stephanmax/lgbtqi-sternchen#readme"
+}
