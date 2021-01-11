@@ -49,6 +49,7 @@ export default class SceneGame extends Phaser.Scene {
 		// World
 		this.load.image('tiles-platforms', '../assets/tiles-platforms.png');
 		this.load.image('tiles-powerups', '../assets/tiles-powerups.png');
+		this.load.image('tiles-deco', '../assets/tiles-deco.png');
 		this.load.tilemapTiledJSON('tilemap-world', '../assets/world.json');
 		
 		// Player
@@ -96,6 +97,7 @@ export default class SceneGame extends Phaser.Scene {
 
 		const tilesetPlatforms = world.addTilesetImage('tileset-platforms', 'tiles-platforms');
 		const tilesetPowerups = world.addTilesetImage('tileset-powerups', 'tiles-powerups');
+		const tilesetDeco = world.addTilesetImage('tileset-deco', 'tiles-deco');
 
 		const layerWorld = world.createLayer('layer-world', tilesetPlatforms, 0, 0);
 		layerWorld.setCollisionByProperty({ collides: true });
@@ -105,6 +107,10 @@ export default class SceneGame extends Phaser.Scene {
 		layerJump.setCollisionByProperty({ collides: true });
 		const layerSpeed = world.createLayer('layer-speed', tilesetPowerups, 0, 0);
 		layerSpeed.setCollisionByProperty({ collides: true });
+		const layerClimb = world.createLayer('layer-climb', tilesetPowerups, 0, 0);
+		layerClimb.setCollisionByProperty({ collides: true });
+
+		world.createLayer('layer-deco', tilesetDeco, 0, 0).setDepth(-10);
 
 		const spawnPlayer = world.findObject('layer-objects', obj => obj.name === 'Player');
 		const spawnOrbJump = world.findObject('layer-objects', obj => obj.name === 'Orb Jump');
@@ -144,6 +150,11 @@ export default class SceneGame extends Phaser.Scene {
 			if (this.player.body.onFloor() && playerData['skill-speedBlock']) {
 				playerData.speedBoost = 2.5;
 				this.player.body.setMaxVelocityX(playerData.MAX_SPEED * playerData.speedBoost);
+			}
+		});
+		this.physics.add.collider(this.player, layerClimb, () => {
+			if (playerData['skill-climb']) {
+				playerData.sticky = true;
 			}
 		});
 		this.physics.add.overlap(this.player, orbs, this.collectOrb, null, this);
@@ -201,10 +212,6 @@ export default class SceneGame extends Phaser.Scene {
 				lifespan: 500,
 				gravityY: 100
 			});
-
-		// this.physics.add.overlap(this.player, this.boxesSticky, () => {
-		// 	playerData.sticky = true;
-		// });
 
 		// Text
 		this.textHuman = this.add.text(this.player.x, this.player.y - 80, 'Use arrow keys\nto move', {
@@ -314,55 +321,26 @@ export default class SceneGame extends Phaser.Scene {
 	}
 
 	update(time, delta) {
-		// if (!playerData.sticky) {
-		// 	this.player.body.setAllowGravity(true);
-		// }
+		if (!playerData.sticky) {
+			this.player.body.setAllowGravity(true);
+		}
 
-		// if (playerData.sticky) {
-		// 	this.player.body.setAllowGravity(false);
+		if (playerData.sticky) {
+			this.player.body.setAllowGravity(false);
 
-		// 	if (this.cursors.up.isDown) {
-		// 		this.player.setVelocityY(-playerData.MAX_SPEED);
-		// 		this.player.play('climb', true);
-		// 	}
-		// 	else if (this.cursors.down.isDown) {
-		// 		this.player.setVelocityY(playerData.MAX_SPEED);
-		// 		this.player.play('climb', true);
-		// 	}
-		// 	else {
-		// 		this.player.setVelocityY(0);
-		// 		this.player.play('climb-idle', true);
-		// 	}
-		// }
-
-		// if (this.cursors.left.isDown) {
-		// 	if (playerData.sticky) {
-		// 		this.player.setVelocityX(-playerData.MAX_SPEED);
-		// 	}
-		// 	else {
-		// 		this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
-		// 		if (this.player.body.onFloor()) {
-		// 			this.player.play('animation-run', true);
-		// 		}
-		// 	}
-		// }
-		// else if (this.cursors.right.isDown) {
-		// 	if (playerData.sticky) {
-		// 		this.player.setVelocityX(playerData.MAX_SPEED);
-		// 	}
-		// 	else {
-		// 		this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
-		// 		if (this.player.body.onFloor()) {
-		// 			this.player.play('animation-run', true);
-		// 		}
-		// 	}
-		// }
-		// else {
-		// 	this.player.setAccelerationX(0);
-		// 	if (this.player.body.onFloor()) {
-		// 		this.player.play('animation-idle', true);
-		// 	}
-		// }
+			if (this.cursors.up.isDown) {
+				this.player.setVelocityY(-playerData.MAX_SPEED);
+				this.player.play('climb', true);
+			}
+			else if (this.cursors.down.isDown) {
+				this.player.setVelocityY(playerData.MAX_SPEED);
+				this.player.play('climb', true);
+			}
+			else {
+				this.player.setVelocityY(0);
+				this.player.stop();
+			}
+		}
 
 		if (this.cursors.left.isDown) {
 			if (playerData.dancing) {
@@ -372,9 +350,14 @@ export default class SceneGame extends Phaser.Scene {
 				this.camera.zoomTo(1, 1500);
 			}
 
-			this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
-			this.player.play('animation-run', true);
-			this.time.addEvent(this.timerDance);
+			if (playerData.sticky) {
+				this.player.setVelocityX(-playerData.MAX_SPEED);
+			}
+			else {
+				this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
+				this.player.play('animation-run', true);
+				this.time.addEvent(this.timerDance);
+			}
 		}
 		else if (this.cursors.right.isDown) {
 			if (playerData.dancing) {
@@ -384,10 +367,14 @@ export default class SceneGame extends Phaser.Scene {
 				this.camera.zoomTo(1, 1500);
 			}
 
-			this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
-			this.player.play('animation-run', true);
-			this.time.addEvent(this.timerDance);
-
+			if (playerData.sticky) {
+				this.player.setVelocityX(playerData.MAX_SPEED);
+			}
+			else {
+				this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
+				this.player.play('animation-run', true);
+				this.time.addEvent(this.timerDance);
+			}
 		}
 		else {
 			this.player.setAccelerationX(0);
@@ -431,7 +418,6 @@ export default class SceneGame extends Phaser.Scene {
 		}
 
 		// Reset
-		// playerData.jumpBoost = 1;
-		// playerData.sticky = false;
+		playerData.sticky = false;
 	}
 }
