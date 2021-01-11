@@ -22,48 +22,65 @@ export default class SceneGame extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image(KEYS.SOLID, '../assets/box-solid.png');
-		this.load.image(KEYS.SPRING, '../assets/box-spring.png');
-		this.load.image(KEYS.SPEEDUP, '../assets/box-speedup.png');
-		this.load.image(KEYS.STICKY, '../assets/box-sticky.png');
-		
-		this.load.atlas(KEYS.PLAYER, '../assets/player.png', '../assets/player_atlas.json');
+		// World
+		this.load.image('tiles-platforms', '../assets/tiles-platforms.png');
+		this.load.image('tiles-powerups', '../assets/tiles-powerups.png');
+  	this.load.tilemapTiledJSON('map', '../assets/world.json');
 	}
 
 	create() {
-		// @TODO: Do not hardcode 768 and 576.
-		this.cameras.main.setBounds(0, 0, 768, 576);
+		const map = this.make.tilemap({ key: 'map' });
 
-		this.createBoxes();
-		this.createPlayer();
+		const tilesetPlatforms = map.addTilesetImage('tileset-platforms', 'tiles-platforms');
+		// const tilesetPowerups = map.addTilesetImage('PowerUpBlocks', 'tiles-powerups');
 
-		this.physics.add.collider(this.player, this.boxesSolid, () => {
-			if (this.player.body.touching.down) {
-				playerData.jumpBoost = 1;
-				playerData.speedBoost = 1;
-				this.player.body.setMaxVelocityX(playerData.MAX_SPEED * playerData.speedBoost);
-			}
+		const layerWorld = map.createLayer('layer-world', tilesetPlatforms, 0, 0);
+		layerWorld.setCollisionByProperty({ collides: true });
+
+		const camera = this.cameras.main;
+		const cursors = this.input.keyboard.createCursorKeys();
+		this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
+			camera: camera,
+			left: cursors.left,
+			right: cursors.right,
+			up: cursors.up,
+			down: cursors.down,
+			speed: 0.5
 		});
+		camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+		// // @TODO: Do not hardcode 768 and 576.
+		// this.cameras.main.setBounds(0, 0, 768, 576);
 
-		this.physics.add.collider(this.player, this.boxesSpring, () => {
-			if (this.player.body.touching.down) {
-				playerData.jumpBoost = 1.5;
-			}
-		});
+		// this.createBoxes();
+		// this.createPlayer();
 
-		this.physics.add.collider(this.player, this.boxesSpeedup, () => {
-			if (this.player.body.touching.down) {
-				playerData.speedBoost = 2;
-				this.player.body.setMaxVelocityX(playerData.MAX_SPEED * playerData.speedBoost);
-			}
-		});
+		// this.physics.add.collider(this.player, this.boxesSolid, () => {
+		// 	if (this.player.body.touching.down) {
+		// 		playerData.jumpBoost = 1;
+		// 		playerData.speedBoost = 1;
+		// 		this.player.body.setMaxVelocityX(playerData.MAX_SPEED * playerData.speedBoost);
+		// 	}
+		// });
 
-		this.physics.add.overlap(this.player, this.boxesSticky, () => {
-			playerData.sticky = true;
-		});
+		// this.physics.add.collider(this.player, this.boxesSpring, () => {
+		// 	if (this.player.body.touching.down) {
+		// 		playerData.jumpBoost = 1.5;
+		// 	}
+		// });
 
-		this.cursors = this.input.keyboard.createCursorKeys();
-		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+		// this.physics.add.collider(this.player, this.boxesSpeedup, () => {
+		// 	if (this.player.body.touching.down) {
+		// 		playerData.speedBoost = 2;
+		// 		this.player.body.setMaxVelocityX(playerData.MAX_SPEED * playerData.speedBoost);
+		// 	}
+		// });
+
+		// this.physics.add.overlap(this.player, this.boxesSticky, () => {
+		// 	playerData.sticky = true;
+		// });
+
+		// this.cursors = this.input.keyboard.createCursorKeys();
+		// this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
 	}
 
 	createBoxes() {
@@ -148,71 +165,72 @@ export default class SceneGame extends Phaser.Scene {
 		});
 	}
 
-	update() {
-		if (!playerData.sticky) {
-			this.player.body.setAllowGravity(true);
-		}
+	update(time, delta) {
+		this.controls.update(delta);
+		// if (!playerData.sticky) {
+		// 	this.player.body.setAllowGravity(true);
+		// }
 
-		if (playerData.sticky) {
-			this.player.body.setAllowGravity(false);
+		// if (playerData.sticky) {
+		// 	this.player.body.setAllowGravity(false);
 
-			if (this.cursors.up.isDown) {
-				this.player.setVelocityY(-playerData.MAX_SPEED);
-				this.player.play('climb', true);
-			}
-			else if (this.cursors.down.isDown) {
-				this.player.setVelocityY(playerData.MAX_SPEED);
-				this.player.play('climb', true);
-			}
-			else {
-				this.player.setVelocityY(0);
-				this.player.play('climb-idle', true);
-			}
-		}
+		// 	if (this.cursors.up.isDown) {
+		// 		this.player.setVelocityY(-playerData.MAX_SPEED);
+		// 		this.player.play('climb', true);
+		// 	}
+		// 	else if (this.cursors.down.isDown) {
+		// 		this.player.setVelocityY(playerData.MAX_SPEED);
+		// 		this.player.play('climb', true);
+		// 	}
+		// 	else {
+		// 		this.player.setVelocityY(0);
+		// 		this.player.play('climb-idle', true);
+		// 	}
+		// }
 
-		if (this.cursors.left.isDown) {
-			if (playerData.sticky) {
-				this.player.setVelocityX(-playerData.MAX_SPEED);
-			}
-			else {
-				this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
-				if (this.player.body.onFloor()) {
-					this.player.play('walk', true);
-				}
-			}
-		}
-		else if (this.cursors.right.isDown) {
-			if (playerData.sticky) {
-				this.player.setVelocityX(playerData.MAX_SPEED);
-			}
-			else {
-				this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
-				if (this.player.body.onFloor()) {
-					this.player.play('walk', true);
-				}
-			}
-		}
-		else {
-			this.player.setAccelerationX(0);
-			if (this.player.body.onFloor()) {
-				this.player.play('idle', true);
-			}
-		}
+		// if (this.cursors.left.isDown) {
+		// 	if (playerData.sticky) {
+		// 		this.player.setVelocityX(-playerData.MAX_SPEED);
+		// 	}
+		// 	else {
+		// 		this.player.setAccelerationX(-playerData.acc * playerData.speedBoost);
+		// 		if (this.player.body.onFloor()) {
+		// 			this.player.play('walk', true);
+		// 		}
+		// 	}
+		// }
+		// else if (this.cursors.right.isDown) {
+		// 	if (playerData.sticky) {
+		// 		this.player.setVelocityX(playerData.MAX_SPEED);
+		// 	}
+		// 	else {
+		// 		this.player.setAccelerationX(playerData.acc * playerData.speedBoost);
+		// 		if (this.player.body.onFloor()) {
+		// 			this.player.play('walk', true);
+		// 		}
+		// 	}
+		// }
+		// else {
+		// 	this.player.setAccelerationX(0);
+		// 	if (this.player.body.onFloor()) {
+		// 		this.player.play('idle', true);
+		// 	}
+		// }
 
-		if (this.cursors.space.isDown) {
-			if (this.player.body.touching.down || (playerData.sticky && (this.cursors.right.isDown || this.cursors.left.isDown))) {
-				this.player.setVelocityY(playerData.jumpPower * playerData.jumpBoost);
-				this.player.play('jump', true);
-			}
-		}
+		// if (this.cursors.space.isDown) {
+		// 	if (this.player.body.touching.down || (playerData.sticky && (this.cursors.right.isDown || this.cursors.left.isDown))) {
+		// 		this.player.setVelocityY(playerData.jumpPower * playerData.jumpBoost);
+		// 		this.player.play('jump', true);
+		// 	}
+		// }
 
-		if (this.player.body.velocity.x > 0) {
-			this.player.setFlipX(false);
-		} else if (this.player.body.velocity.x < 0) {
-			this.player.setFlipX(true);
-		}
+		// if (this.player.body.velocity.x > 0) {
+		// 	this.player.setFlipX(false);
+		// } else if (this.player.body.velocity.x < 0) {
+		// 	this.player.setFlipX(true);
+		// }
 
-		// Reset
-		playerData.sticky = false;
+		// // Reset
+		// playerData.sticky = false;
 	}
 }
